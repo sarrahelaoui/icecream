@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +16,7 @@
     <!-- External CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
@@ -503,7 +513,7 @@
         <a href="#">Shop Now</a>
     </div>
 </div>
-
+<?php include 'components/footer.php'; ?>
 
 <script>
 let slideIndex = 0;
