@@ -78,6 +78,7 @@
   </style>
 </head>
 <body>
+  
   <?php
 require_once 'include/database.php';
 

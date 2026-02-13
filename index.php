@@ -410,7 +410,7 @@ if (!isset($_SESSION['user_id'])) {
             Relish the sweetness of cool treats,<br>
             made to bring smiles and joy — bite after bite.
         </p>
-        <a href="#" class="banner-btn">Shop Now</a>
+        <a href="ajouter.php" class="banner-btn">Shop Now</a>
     </div>
 </div>
 
@@ -510,7 +510,7 @@ if (!isset($_SESSION['user_id'])) {
     <div class="text">
         <h2>Hot Deal! Sale up To 20% off</h2>
         <p>Limited time only</p>
-        <a href="#">Shop Now</a>
+        <a href="ajouter.php">Shop Now</a>
     </div>
 </div>
 <?php include 'components/footer.php'; ?>
