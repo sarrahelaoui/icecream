@@ -110,6 +110,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <input type="password" name="password" placeholder="Mot de passe" required>
     <button type="submit">Se connecter</button>
   </form>
+  <p style="margin-top: 15px; font-size: 14px;">
+    Vous n'avez pas de compte ?
+    <a href="inscription.php" style="color:#ff4f87; font-weight:bold; text-decoration:none;">
+      S'inscrire
+    </a>
+  </p>
+</div>
 </div>
 
 </body>

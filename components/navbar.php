@@ -2,8 +2,21 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-?>
 
+require 'include/database.php';
+
+$cartCount = 0;
+
+if (isset($_SESSION['user_id'])) {
+    $stmt = $pdo->prepare("SELECT SUM(quantity) FROM orders WHERE user_id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $cartCount = $stmt->fetchColumn();
+
+    if (!$cartCount) {
+        $cartCount = 0;
+    }
+}
+?>
 <style>
     /* Navbar icons */
 .nav-icon {
@@ -75,36 +88,56 @@ if (session_status() === PHP_SESSION_NONE) {
 </style>
 
 <header class="navbar">
+    <!-- LOGO -->
     <div class="logo">
         <img src="./image/logo.png" alt="logo">
     </div>
-
+ <!-- MENU -->
     <ul class="menu">
         <li><a href="index.php">Home</a></li>
-        <li><a href="#">About Us</a></li>
+        <li><a href="index.php#slider">About Us</a></li>
         <li><a href="ajouter.php">Shop</a></li>
         <li><a href="save_order.php">Order</a></li>
-        <li><a href="#">Contact Us</a></li>
+        <li><a href="contact.php">Contact Us</a></li>
     </ul>
 
-    <div class="search">
-        <input type="text" placeholder="Search product">
-        <i class="fa fa-search"></i>
-    </div>
-    <!-- Like and Cart Icons -->
-    <div class="nav-icon">
-        <a href="like.php">
-            <img src="./image/heart.png" alt="like">
-            <span class="badge"><?php echo isset($_SESSION['likes_count']) ? $_SESSION['likes_count'] : 0; ?></span>
-        </a>
-    </div>
+  <div class="search">
+    <form action="ajouter.php" method="GET">
+        <input type="text" name="search" placeholder="Search product">
+        <button type="submit">
+            <i class="fa fa-search"></i>
+        </button>
+    </form>
+</div>
+   
 
     <div class="nav-icon">
-        <a href="save_order.php">
-            <img src="./image/shopping.png" alt="cart">
-            <span class="badge"><?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0; ?></span>
-        </a>
-    </div>
+    <a href="save_order.php">
+        <img src="./image/shopping.png" alt="cart">
+
+        <?php
+        $cartCount = 0;
+
+        if (isset($_SESSION['user_id'])) {
+
+            require_once 'include/database.php';
+
+            $stmt = $pdo->prepare("SELECT SUM(quantity) AS total_qty FROM orders WHERE user_id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $cartCount = $result['total_qty'] ?? 0;
+
+            if ($cartCount === null) {
+                $cartCount = 0;
+            }
+        }
+        ?>
+
+        <span class="badge"><?= $cartCount ?></span>
+    </a>
+</div>
+
     <!-- User dropdown -->
     <div class="user-dropdown">
         <img src="./image/user.png" alt="user logo" class="user-logo">

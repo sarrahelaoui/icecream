@@ -1,582 +1,213 @@
+<?php
+session_start();
+include 'components/navbar.php';
+
+$search = "";
+if (isset($_GET['search'])) {
+    $search = strtolower(trim($_GET['search']));
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <title>Ice Cream Shop</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
 
-    
-body {
+body{
     font-family: Arial, sans-serif;
-    background: #fff0f5;
-    margin: 0;
-    padding: 10px;
+    background:#fff0f5;
+    margin:0;
+    padding:10px;
 }
 
-/* Grid container */
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+h1{
+    text-align:center;
+    color:#db2626;
 }
 
-/* Each product card */
-.product-card {
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    text-align: center;
-    padding: 15px;
-    transition: transform 0.3s;
+.grid-container{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
 }
 
-.product-card:hover {
-    transform: translateY(-5px);
+.product-card{
+    background:#fff;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    text-align:center;
+    padding:15px;
 }
 
-.product-card img {
-    width: 100%;
-    border-radius: 10px;
+.product-card img{
+    width:100%;
+    border-radius:10px;
+    height:220px;
+    object-fit:cover;
 }
 
-.product-card h3 {
-    margin: 10px 0 5px;
-    color: #db2626;
+.product-card h3{
+    color:#db2626;
 }
 
-.product-card p.price {
-    font-weight: bold;
-    color: #ff4f87;
+.price{
+    color:#ff4f87;
+    font-weight:bold;
 }
 
-.product-card .icons {
-    margin: 10px 0;
+.icons{
+    margin:10px 0;
+    font-size:20px;
 }
 
-.product-card .icons span {
-    font-size: 20px;
-    margin: 0 5px;
-    cursor: pointer;
-    transition: transform 0.2s;
+.quantity input{
+    width:70px;
+    padding:7px;
+    text-align:center;
+    border:1px solid pink;
+    border-radius:6px;
 }
 
-.product-card .icons span:hover {
-    transform: scale(1.2);
+.buy{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(45deg,#ff7aa2,#ff4f87);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-.product-card .quantity {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 10px 0;
+.buy:hover{
+    opacity:0.9;
 }
 
-.product-card .quantity button {
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    background: #ff7aa2;
-    color: white;
-    cursor: pointer;
-    margin: 0 5px;
-    transition: background 0.3s;
+.success{
+    background:#d4edda;
+    color:green;
+    padding:10px;
+    margin:15px;
+    border-radius:8px;
+    text-align:center;
 }
 
-.product-card .quantity button:hover {
-    background: #ff4f87;
+.no-result{
+    text-align:center;
+    color:red;
+    font-weight:bold;
+    margin:20px;
 }
 
-.product-card .quantity input {
-    width: 40px;
-    text-align: center;
-    font-size: 16px;
-    border: 1px solid #ffc0cb;
-    border-radius: 5px;
-}
-
-.product-card button.buy {
-    width: 100%;
-    padding: 10px;
-    background: linear-gradient(45deg, #ff7aa2, #ff4f87);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-.product-card button.buy:hover {
-    transform: scale(1.05);
-}
 </style>
-<link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-<?php include 'components/navbar.php'; ?>
 <main>
-<h1 style="text-align:center; color:#db2626;">Our Ice Cream Collection</h1>
+
+<?php if(isset($_GET['success'])){ ?>
+<div class="success">✅ Order saved successfully</div>
+<?php } ?>
+
+<h1>Our Ice Cream Collection</h1>
 
 <div class="grid-container">
 
-  <!-- Product 1 -->
-  <div class="product-card">
-    <img src="image/products/chocolate.jpg" alt="Chocolate Ice Cream">
-    <h3>Chocolate Ice Cream</h3>
-    <p class="price">Price: $20</p>
+<?php
 
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
+$products = [
 
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
+["Chocolate Ice Cream","image/products/chocolate.jpg",25],
+["Vanilla Ice Cream","image/products/vanilla.jpg",40],
+["Strawberry Ice Cream","image/products/strawberry.jpg",20],
+["Mango Ice Cream","image/products/mango.jpg",29],
+["Coffee Ice Cream","image/products/coffe.jpg",28],
+["Cookies Ice Cream","image/products/cookies ice cream.jpeg",27],
+["Blueberry Ice Cream","image/products/blueberry.jpg",16],
+["Cherry Ice Cream","image/products/cherry.jpg",19],
+["Caramel Ice Cream","image/products/caramel.jpeg",20],
+["Chocolate Banana Ice Cream","image/products/chocolate banana.jpg",23],
+["Coconut Ice Cream","image/products/coconut ice cream.jpg",50],
+["Frozen Yogurt Ice Cream","image/products/frozen yogurt.jpeg",12],
+["Corn Ice Cream","image/products/corn ice cream.jpg",26],
+["Cake Ice Cream","image/products/cake ice cream.jpg",20],
+["Mint Chocolate Ice Cream","image/products/mint chocolate chip.jpg",24],
+["Tiramisu Ice Cream","image/products/tiramisu-ice-cream-scoops-with.jpg",27],
+["Lemon Chocolate Ice Cream","image/products/lemon chocolate.jpg",22],
+["Dondurma Ice Cream","image/products/Dondurma.jpeg",25],
+["Gelato Ice Cream","image/products/gelato.jpg",20],
+["Blackberry Ice Cream","image/products/blackberry.jpeg",30],
+["Lemon Ice Cream","image/products/lemon.jpg",15],
+["Rocky Road Ice Cream","image/products/rocky road.jpg",35],
+["Ice Popsicle Ice Cream","image/products/ice popsicle.jpeg",10]
 
-    <button class="buy">Buy Now</button>
-  </div>
+];
 
-  <!-- Product 2 -->
-  <div class="product-card">
-    <img src="image/products/vanilla.jpg" alt="Vanilla Ice Cream">
-    <h3>Vanilla Ice Cream</h3>
-    <p class="price">Price: $20</p>
+$count = 0;
 
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
+foreach($products as $product){
 
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
+$name  = $product[0];
+$image = $product[1];
+$price = $product[2];
 
-    <button class="buy">Buy Now</button>
-  </div>
+/* ✅ FILTER SEARCH */
+if ($search != "" && strpos(strtolower($name), $search) === false) {
+    continue;
+}
 
-  <!-- Product 3 -->
-  <div class="product-card">
-    <img src="image/products/strawberry.jpg" alt="Strawberry Ice Cream">
-    <h3>Strawberry Ice Cream</h3>
-    <p class="price">Price: $20</p>
+$count++;
 
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-
-  <!-- Product 4 -->
-  <div class="product-card">
-    <img src="image/products/mango.jpg" alt="Mango Ice Cream">
-    <h3>Mango Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/coffe.jpg" alt="Coffee Ice Cream">
-    <h3>Coffee Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-
-  <!-- Product 6 -->
-  <div class="product-card">
-    <img src="image/products/cookies ice cream.jpeg" alt="Cookies Ice Cream">
-    <h3>Cookies Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-   
-    <!-- Product 7 -->
-  <div class="product-card">
-    <img src="image/products/blueberry.jpg" alt="blueberry Ice Cream">
-    <h3>blueberry Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div> 
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/cherry.jpg" alt="Cherry Ice Cream">
-    <h3>Cherry Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-
-
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/caramel.jpeg" alt="caramel Ice Cream">
-    <h3>caramel Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
+?>
 
 <div class="product-card">
-    <img src="image/products/chocolate banana.jpg" alt="chocolate banana Ice Cream">
-    <h3>chocolate banana Ice Cream</h3>
-    <p class="price">Price: $20</p>
 
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
+<img src="<?php echo $image; ?>" alt="<?php echo $name; ?>">
 
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
+<h3><?php echo $name; ?></h3>
 
-    <button class="buy">Buy Now</button>
-  </div>
-<!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/coconut ice cream.jpg" alt="coconut Ice Cream">
-    <h3>coconut Ice Cream</h3>
-    <p class="price">Price: $20</p>
+<p class="price">Price: $<?php echo $price; ?></p>
 
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
+<div class="icons">❤️ 👁️</div>
 
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
+<form action="save_order.php" method="POST">
 
-    <button class="buy">Buy Now</button>
-  </div>
-   <!-- Product 6 -->
-  <div class="product-card">
-    <img src="image/products/frozen yogurt.jpeg" alt="frozen yogurt Ice Cream">
-    <h3>frozen yogurt Ice Cream</h3>
-    <p class="price">Price: $20</p>
+<input type="hidden" name="product" value="<?php echo $name; ?>">
+<input type="hidden" name="image" value="<?php echo $image; ?>">
+<input type="hidden" name="price" value="<?php echo $price; ?>">
 
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
+<div class="quantity">
+<input type="number" name="quantity" value="1" min="1" required>
+</div>
 
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
+<button type="submit" class="buy">Buy Now</button>
 
-    <button class="buy">Buy Now</button>
-  </div>
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/corn ice cream.jpg" alt="corn Ice Cream">
-    <h3>corn Ice Cream</h3>
-    <p class="price">Price: $20</p>
+</form>
 
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
+</div>
 
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
+<?php } ?>
 
-    <button class="buy">Buy Now</button>
-  </div>
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/cake ice cream.jpg" alt="cake Ice Cream">
-    <h3>cake Ice Cream</h3>
-    <p class="price">Price: $20</p>
+</div>
 
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
+<?php
+/* ✅ if no product found */
+if($count == 0){
+    echo "<div class='no-result'>❌ No products found</div>";
+}
+?>
 
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
+</main>
 
-    <button class="buy">Buy Now</button>
-  </div>
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/mint chocolate chip.jpg" alt="mint chocolate Ice Cream">
-    <h3>mint chocolate Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/strawberry.jpg" alt="strawberry Ice Cream">
-    <h3>strawberry Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/tiramisu-ice-cream-scoops-with.jpg" alt="tiramisu Ice Cream">
-    <h3>tiramisu Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/lemon chocolate.jpg" alt="lemon chocolate Ice Cream">
-    <h3>lemon chocolate Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/Dondurma.jpeg" alt="Dondurma Ice Cream">
-    <h3>Dondurma Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/gelato.jpg" alt="gelato Ice Cream">
-    <h3>gelato Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-  <!-- Product 5 -->
-  <div class="product-card">
-    <img src="image/products/chocolate banana.jpg" alt="chocolate banana Ice Cream">
-    <h3>chocolate banana Ice Cream</h3>
-    <p class="price">Price: $20</p>
-
-    <div class="icons">
-        <span title="Love">❤️</span>
-        <span title="View">👁️</span>
-    </div>
-
-    <div class="quantity">
-        <button class="decrease">-</button>
-        <input type="text" value="1" readonly>
-        <button class="increase">+</button>
-    </div>
-
-    <button class="buy">Buy Now</button>
-  </div>
-  </main>
-  <?php include 'components/footer.php'; ?>
-<script>
-// Gestion + / - et Buy Now
-document.querySelectorAll('.product-card').forEach(card => {
-    const decrease = card.querySelector('.decrease');
-    const increase = card.querySelector('.increase');
-    const input = card.querySelector('input');
-    const buy = card.querySelector('.buy');
-
-    decrease.addEventListener('click', () => {
-        if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
-    });
-
-    increase.addEventListener('click', () => {
-        input.value = parseInt(input.value) + 1;
-    });
-
-   buy.addEventListener('click', () => {
-    const product = card.querySelector('h3').innerText;
-    const priceText = card.querySelector('.price').innerText;
-    const price = priceText.replace(/[^0-9.]/g, '');
-    const quantity = input.value;
-
-    fetch('save_order.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `product=${encodeURIComponent(product)}&price=${price}&quantity=${quantity}`
-    })
-    .then(res => res.text())
-.then(data => {
-    if (data === "success") {
-        alert("✅ Commande enregistrée !");
-    } else if (data === "not_logged_in") {
-        alert("⚠️ Vous devez vous connecter !");
-    } else {
-        alert("❌ Erreur lors de l'enregistrement");
-    }
-});
-
-
-});
-
-});
-</script>
+<?php include 'components/footer.php'; ?>
 
 </body>
 </html>

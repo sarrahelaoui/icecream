@@ -282,7 +282,7 @@ if (!isset($_SESSION['user_id'])) {
         <span class="line1">the classic ice</span><br>
         <span class="line2">cream parlor</span><br>
     </h1>
-    <a href="#" class="btn">Order Now</a>
+    <a href="ajouter.php" class="btn">Order Now</a>
 </section>
 
 <!-- SLIDESHOW -->
@@ -457,7 +457,7 @@ if (!isset($_SESSION['user_id'])) {
          <p>Strawberry & Lingonberry <br>
              
            find your tast of desserts
-             <a href="#" class="banner-btn">Explore More</a></p>
+             <a href="ajouter.php" class="banner-btn">Explore More</a></p>
      
     </div>
 
@@ -466,7 +466,7 @@ if (!isset($_SESSION['user_id'])) {
            <p>Fruit Ice Cream <br>
                Cookie Ice Cream <br>
            find your tast of desserts
-             <a href="#" class="banner-btn">Explore More</a></p>
+             <a href="ajouter.php" class="banner-btn">Explore More</a></p>
     </div>
 
     <div class="service-box-i">
@@ -474,14 +474,14 @@ if (!isset($_SESSION['user_id'])) {
         <p>Strawberry Coffee <br>
                Cookie Ice Cream <br>
            find your tast of desserts
-             <a href="#" class="banner-btn">Explore More</a></p>
+             <a href="ajouter.php" class="banner-btn">Explore More</a></p>
     </div>
 
     <div class="service-box-i">
         <img src="image/type5.webp" class="img-black">
           <p>Bubbies Mochi Ice Cream <br>
            find your tast of desserts
-             <a href="#" class="banner-btn">Explore More</a></p>
+             <a href="ajouter.php" class="banner-btn">Explore More</a></p>
     </div>
 
     <div class="service-box-i">
@@ -489,14 +489,14 @@ if (!isset($_SESSION['user_id'])) {
           <p>Chocolate Ice Cream<br>
              
            find your tast of desserts
-             <a href="#" class="banner-btn">Explore More</a></p>
+             <a href="ajouter.php" class="banner-btn">Explore More</a></p>
     </div>
 
     <div class="service-box-i">
         <img src="image/type6.webp" class="img-black">
          <p>Mango Ice Cream<br>
            find your tast of desserts
-             <a href="#" class="banner-btn">Explore More</a></p>
+             <a href="ajouter.php" class="banner-btn">Explore More</a></p>
     </div>
 </section>
 
